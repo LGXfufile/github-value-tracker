@@ -20,6 +20,16 @@ export interface GitHubProject {
   } | null;
 }
 
+export interface ProjectAnalysis {
+  problemSolved: string;
+  userAppeal: string;
+  maintainerMotivation: string;
+  monetizationDifficulty: {
+    level: 'low' | 'medium' | 'high';
+    challenges: string;
+  };
+}
+
 export interface ProjectMetrics {
   project: GitHubProject;
   stars_growth_7d: number;
@@ -31,6 +41,7 @@ export interface ProjectMetrics {
   issue_close_rate: number;
   value_score: number;
   last_updated: string;
+  ai_analysis?: ProjectAnalysis;
 }
 
 export interface TrendingProject {

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GitHubAPI } from '@/lib/github-api';
 import { ValueCalculator } from '@/lib/value-calculator';
+import { AIAnalyzer } from '@/lib/ai-analyzer';
 import { MOCK_PROJECTS, MOCK_DISCOVERIES } from '@/lib/mock-data';
 
 // 预设的高价值种子项目
@@ -62,6 +63,10 @@ async function getTrackedProjects() {
       const [owner, repo] = projectPath.split('/');
       const project = await GitHubAPI.getRepository(owner, repo);
       const metrics = await ValueCalculator.calculateDetailedMetrics(project);
+      
+      // 添加AI分析
+      metrics.ai_analysis = AIAnalyzer.analyzeProject(project, metrics);
+      
       projects.push(metrics);
     } catch (error) {
       console.error(`Failed to fetch project ${projectPath}:`, error);

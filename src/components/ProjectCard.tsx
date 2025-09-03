@@ -164,6 +164,53 @@ export function ProjectCard({ metrics }: ProjectCardProps) {
           )}
         </div>
       )}
+
+      {/* AI Analysis */}
+      {metrics.ai_analysis && (
+        <div className="mt-4 p-4 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-lg border border-purple-500/20">
+          <div className="flex items-center space-x-2 mb-3">
+            <div className="w-5 h-5 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center">
+              <span className="text-xs text-white font-bold">AI</span>
+            </div>
+            <h4 className="text-sm font-semibold text-purple-300">智能分析</h4>
+          </div>
+          
+          <div className="space-y-3 text-sm">
+            <div>
+              <span className="text-blue-400 font-medium">🎯 解决问题：</span>
+              <span className="text-slate-300 ml-1">{metrics.ai_analysis.problemSolved}</span>
+            </div>
+            
+            <div>
+              <span className="text-green-400 font-medium">⭐ 用户追捧：</span>
+              <span className="text-slate-300 ml-1">{metrics.ai_analysis.userAppeal}</span>
+            </div>
+            
+            <div>
+              <span className="text-yellow-400 font-medium">🔄 更新动力：</span>
+              <span className="text-slate-300 ml-1">{metrics.ai_analysis.maintainerMotivation}</span>
+            </div>
+            
+            <div>
+              <span className="text-orange-400 font-medium">💰 盈利难度：</span>
+              <span className={`ml-2 px-2 py-1 text-xs rounded-full ${
+                metrics.ai_analysis.monetizationDifficulty.level === 'low' 
+                  ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
+                  : metrics.ai_analysis.monetizationDifficulty.level === 'medium'
+                  ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'
+                  : 'bg-red-500/20 text-red-400 border border-red-500/30'
+              }`}>
+                {metrics.ai_analysis.monetizationDifficulty.level === 'low' ? '低难度' 
+                 : metrics.ai_analysis.monetizationDifficulty.level === 'medium' ? '中等难度' 
+                 : '高难度'}
+              </span>
+              <div className="text-slate-400 text-xs mt-1 ml-4">
+                💡 {metrics.ai_analysis.monetizationDifficulty.challenges}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

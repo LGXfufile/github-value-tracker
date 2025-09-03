@@ -1,4 +1,5 @@
 import { ProjectMetrics, Discovery } from '@/types/github';
+import { AIAnalyzer } from './ai-analyzer';
 
 export const MOCK_PROJECTS: ProjectMetrics[] = [
   {
@@ -31,7 +32,16 @@ export const MOCK_PROJECTS: ProjectMetrics[] = [
     release_frequency: 12,
     issue_close_rate: 0.85,
     value_score: 92,
-    last_updated: '2025-09-03T10:00:00Z'
+    last_updated: '2025-09-03T10:00:00Z',
+    ai_analysis: {
+      problemSolved: "简化React应用开发，提供生产就绪的全栈解决方案",
+      userAppeal: "开发体验极佳，性能优秀，生态丰富，企业级特性完善",
+      maintainerMotivation: "前端框架是基础设施，巨大的开发者生态带来商业价值和技术影响力",
+      monetizationDifficulty: {
+        level: 'high',
+        challenges: "框架本身难以直接盈利，主要通过周边服务（Vercel部署、培训、咨询）以及企业影响力获得收益"
+      }
+    }
   },
   {
     project: {
@@ -63,105 +73,24 @@ export const MOCK_PROJECTS: ProjectMetrics[] = [
     release_frequency: 18,
     issue_close_rate: 0.78,
     value_score: 89,
-    last_updated: '2025-09-03T09:45:00Z'
-  },
-  {
-    project: {
-      id: 3,
-      name: 'posthog',
-      full_name: 'PostHog/posthog',
-      description: '🦔 PostHog provides open-source product analytics, session recording, feature flagging and A/B testing.',
-      html_url: 'https://github.com/PostHog/posthog',
-      stargazers_count: 21000,
-      forks_count: 1200,
-      open_issues_count: 180,
-      watchers_count: 21000,
-      language: 'Python',
-      created_at: '2020-01-23T15:07:47Z',
-      updated_at: '2025-09-03T11:20:00Z',
-      pushed_at: '2025-09-03T11:00:00Z',
-      homepage: 'https://posthog.com',
-      topics: ['analytics', 'product-analytics', 'business', 'saas', 'open-source'],
-      license: {
-        key: 'mit',
-        name: 'MIT License'
+    last_updated: '2025-09-03T09:45:00Z',
+    ai_analysis: {
+      problemSolved: "简化后端开发复杂度，提供即开即用的后端服务（数据库、认证、API等）",
+      userAppeal: "极大降低全栈开发门槛，快速构建MVP，专注前端和业务逻辑",
+      maintainerMotivation: "云服务市场高速增长，开源+商业云服务模式被验证成功（如Firebase）",
+      monetizationDifficulty: {
+        level: 'high',
+        challenges: "需要强大的云基础设施投入，与AWS/Google竞争，但可通过托管服务、企业私有化部署、技术咨询获得收入"
       }
-    },
-    stars_growth_7d: 180,
-    stars_growth_30d: 900,
-    fork_star_ratio: 0.057,
-    commit_frequency: 120,
-    contributors_count: 89,
-    release_frequency: 24,
-    issue_close_rate: 0.92,
-    value_score: 86,
-    last_updated: '2025-09-03T11:20:00Z'
-  },
-  {
-    project: {
-      id: 4,
-      name: 'strapi',
-      full_name: 'strapi/strapi',
-      description: '🚀 Strapi is the leading open-source headless CMS. Its 100% JavaScript/TypeScript.',
-      html_url: 'https://github.com/strapi/strapi',
-      stargazers_count: 63000,
-      forks_count: 7900,
-      open_issues_count: 650,
-      watchers_count: 63000,
-      language: 'JavaScript',
-      created_at: '2015-10-13T19:50:31Z',
-      updated_at: '2025-09-03T08:30:00Z',
-      pushed_at: '2025-09-02T16:45:00Z',
-      homepage: 'https://strapi.io',
-      topics: ['cms', 'headless-cms', 'api', 'nodejs', 'commercial'],
-      license: {
-        key: 'mit',
-        name: 'MIT License'
-      }
-    },
-    stars_growth_7d: 220,
-    stars_growth_30d: 1200,
-    fork_star_ratio: 0.125,
-    commit_frequency: 35,
-    contributors_count: 425,
-    release_frequency: 8,
-    issue_close_rate: 0.73,
-    value_score: 82,
-    last_updated: '2025-09-03T08:30:00Z'
-  },
-  {
-    project: {
-      id: 5,
-      name: 'nocodb',
-      full_name: 'nocodb/nocodb',
-      description: '🔥 🔥 🔥 Open Source Airtable Alternative',
-      html_url: 'https://github.com/nocodb/nocodb',
-      stargazers_count: 48000,
-      forks_count: 3200,
-      open_issues_count: 420,
-      watchers_count: 48000,
-      language: 'TypeScript',
-      created_at: '2021-03-07T18:16:48Z',
-      updated_at: '2025-09-03T07:15:00Z',
-      pushed_at: '2025-09-03T06:20:00Z',
-      homepage: 'https://nocodb.com',
-      topics: ['airtable-alternative', 'database', 'no-code', 'saas', 'enterprise'],
-      license: {
-        key: 'agpl-3.0',
-        name: 'GNU Affero General Public License v3.0'
-      }
-    },
-    stars_growth_7d: 290,
-    stars_growth_30d: 1500,
-    fork_star_ratio: 0.067,
-    commit_frequency: 52,
-    contributors_count: 156,
-    release_frequency: 15,
-    issue_close_rate: 0.81,
-    value_score: 79,
-    last_updated: '2025-09-03T07:15:00Z'
+    }
   }
-];
+].map(project => {
+  // 为没有AI分析的项目自动生成
+  if (!project.ai_analysis) {
+    project.ai_analysis = AIAnalyzer.analyzeProject(project.project, project);
+  }
+  return project;
+});
 
 export const MOCK_DISCOVERIES: Discovery[] = [
   {
