@@ -1,5 +1,5 @@
 import { ProjectMetrics } from '@/types/github';
-import { StarIcon, GitForkIcon, EyeIcon, GitCommitIcon, TrendingUpIcon, ExternalLinkIcon } from 'lucide-react';
+import { StarIcon, GitForkIcon, EyeIcon, GitCommitIcon, ExternalLinkIcon } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { zhCN } from 'date-fns/locale';
 

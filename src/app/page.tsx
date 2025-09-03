@@ -1,17 +1,17 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ProjectMetrics } from '@/types/github';
+import { ProjectMetrics, Discovery } from '@/types/github';
 import { ProjectCard } from '@/components/ProjectCard';
 import { StatsOverview } from '@/components/StatsOverview';
 import { FilterPanel } from '@/components/FilterPanel';
 import { DiscoveryPanel } from '@/components/DiscoveryPanel';
-import { TrendingUpIcon, GitBranchIcon, StarIcon } from 'lucide-react';
+import { TrendingUpIcon, GitBranchIcon } from 'lucide-react';
 
 interface DashboardData {
   projects: ProjectMetrics[];
-  discoveries?: any[];
-  trending?: any[];
+  discoveries?: Discovery[];
+  trending?: unknown[];
   total: number;
   last_updated: string;
 }

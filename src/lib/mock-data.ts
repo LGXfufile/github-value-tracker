@@ -1,4 +1,4 @@
-import { GitHubProject, ProjectMetrics } from '@/types/github';
+import { ProjectMetrics, Discovery } from '@/types/github';
 
 export const MOCK_PROJECTS: ProjectMetrics[] = [
   {
@@ -163,7 +163,7 @@ export const MOCK_PROJECTS: ProjectMetrics[] = [
   }
 ];
 
-export const MOCK_DISCOVERIES = [
+export const MOCK_DISCOVERIES: Discovery[] = [
   {
     project: {
       project: {
@@ -187,7 +187,6 @@ export const MOCK_DISCOVERIES = [
           name: 'Apache License 2.0'
         }
       },
-      value_score: 75,
       stars_growth_7d: 450,
       stars_growth_30d: 2800,
       fork_star_ratio: 0.053,
@@ -195,6 +194,7 @@ export const MOCK_DISCOVERIES = [
       contributors_count: 67,
       release_frequency: 22,
       issue_close_rate: 0.87,
+      value_score: 75,
       last_updated: '2025-09-03T12:30:00Z'
     },
     reason: 'high_value_discovery',
@@ -223,7 +223,6 @@ export const MOCK_DISCOVERIES = [
           name: 'Elastic License 2.0'
         }
       },
-      value_score: 68,
       stars_growth_7d: 25,
       stars_growth_30d: 180,
       fork_star_ratio: 0.284,
@@ -231,6 +230,7 @@ export const MOCK_DISCOVERIES = [
       contributors_count: 89,
       release_frequency: 6,
       issue_close_rate: 0.76,
+      value_score: 68,
       last_updated: '2025-09-03T10:20:00Z'
     },
     reason: 'high_value_discovery',

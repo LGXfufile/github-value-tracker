@@ -1,9 +1,10 @@
 import { SparklesIcon, ExternalLinkIcon, StarIcon } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { zhCN } from 'date-fns/locale';
+import { Discovery } from '@/types/github';
 
 interface DiscoveryPanelProps {
-  discoveries: any[];
+  discoveries: Discovery[];
 }
 
 export function DiscoveryPanel({ discoveries }: DiscoveryPanelProps) {
@@ -21,7 +22,7 @@ export function DiscoveryPanel({ discoveries }: DiscoveryPanelProps) {
               key={discovery.project?.project?.id || index}
               className="p-4 bg-slate-700/30 rounded-lg border border-slate-600/30 hover:border-slate-500/50 transition-colors"
             >
-              <div className="flex items-start justify-between mb-2">
+              <div className="flex items-center justify-between">
                 <h4 className="text-sm font-medium text-white truncate flex-1">
                   {discovery.project?.project?.name || '未知项目'}
                 </h4>

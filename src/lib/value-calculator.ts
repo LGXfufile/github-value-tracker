@@ -178,12 +178,12 @@ export class ValueCalculator {
       // 计算指标
       const contributors_count = contributors.length;
       const commit_frequency = commits.length; // 30天内的commit数
-      const release_frequency = releases.filter(r => 
-        new Date(r.published_at) > new Date(Date.now() - 365 * 24 * 60 * 60 * 1000)
+      const release_frequency = releases.filter((r: unknown) => 
+        new Date((r as { published_at: string }).published_at) > new Date(Date.now() - 365 * 24 * 60 * 60 * 1000)
       ).length; // 一年内的release数
       
       // Issue关闭率 (简化计算)
-      const closedIssues = issues.filter(i => i.state === 'closed').length;
+      const closedIssues = issues.filter((i: unknown) => (i as { state: string }).state === 'closed').length;
       const totalIssues = Math.max(project.open_issues_count + closedIssues, 1);
       const issue_close_rate = closedIssues / totalIssues;
       

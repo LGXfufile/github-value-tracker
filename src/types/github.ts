@@ -38,3 +38,9 @@ export interface TrendingProject {
   reason: 'trending' | 'keyword_match' | 'related_discovery';
   discovered_at: string;
 }
+
+export interface Discovery {
+  project: ProjectMetrics;
+  reason: string;
+  discovered_at: string;
+}

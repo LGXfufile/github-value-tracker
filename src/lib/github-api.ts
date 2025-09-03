@@ -1,4 +1,4 @@
-import { GitHubProject, ProjectMetrics } from '@/types/github';
+import { GitHubProject } from '@/types/github';
 
 const GITHUB_API_BASE = 'https://api.github.com';
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
@@ -43,7 +43,7 @@ export class GitHubAPI {
     return data.items;
   }
 
-  static async getContributors(owner: string, repo: string): Promise<any[]> {
+  static async getContributors(owner: string, repo: string): Promise<unknown[]> {
     const response = await fetch(`${GITHUB_API_BASE}/repos/${owner}/${repo}/contributors?per_page=100`, {
       headers,
     });
@@ -55,7 +55,7 @@ export class GitHubAPI {
     return response.json();
   }
 
-  static async getCommits(owner: string, repo: string, since?: string): Promise<any[]> {
+  static async getCommits(owner: string, repo: string, since?: string): Promise<unknown[]> {
     const params = new URLSearchParams();
     if (since) params.append('since', since);
     params.append('per_page', '100');
@@ -71,7 +71,7 @@ export class GitHubAPI {
     return response.json();
   }
 
-  static async getReleases(owner: string, repo: string): Promise<any[]> {
+  static async getReleases(owner: string, repo: string): Promise<unknown[]> {
     const response = await fetch(`${GITHUB_API_BASE}/repos/${owner}/${repo}/releases?per_page=10`, {
       headers,
     });
@@ -83,7 +83,7 @@ export class GitHubAPI {
     return response.json();
   }
 
-  static async getIssues(owner: string, repo: string, state: 'open' | 'closed' = 'all'): Promise<any[]> {
+  static async getIssues(owner: string, repo: string, state: 'open' | 'closed' | 'all' = 'all'): Promise<unknown[]> {
     const response = await fetch(`${GITHUB_API_BASE}/repos/${owner}/${repo}/issues?state=${state}&per_page=100`, {
       headers,
     });
