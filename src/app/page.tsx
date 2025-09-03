@@ -52,6 +52,13 @@ export default function Home() {
       });
     } catch (error) {
       console.error('Failed to fetch data:', error);
+      // 在错误情况下显示模拟数据
+      setData({
+        projects: [],
+        discoveries: [],
+        total: 0,
+        last_updated: new Date().toISOString()
+      });
     } finally {
       setLoading(false);
     }

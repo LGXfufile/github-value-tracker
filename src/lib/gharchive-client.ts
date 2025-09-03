@@ -182,8 +182,14 @@ export class GHArchiveClient {
       }
 
       const project = projects.get(repoName);
+      if (!project) continue; // 安全检查
+      
       project.total_events++;
-      project.unique_contributors.add(event.actor.login);
+      
+      // 安全检查Set是否存在
+      if (project.unique_contributors && project.unique_contributors.add) {
+        project.unique_contributors.add(event.actor.login);
+      }
 
       // 根据事件类型更新统计
       switch (event.type) {
@@ -194,7 +200,9 @@ export class GHArchiveClient {
           project.forks_added++;
           break;
         case 'PushEvent':
-          project.unique_contributors.add(event.actor.login);
+          if (project.unique_contributors && project.unique_contributors.add) {
+            project.unique_contributors.add(event.actor.login);
+          }
           break;
       }
 
@@ -211,16 +219,26 @@ export class GHArchiveClient {
         project.watchers = repo.watchers_count;
         project.default_branch = repo.default_branch;
         
-        if (repo.language) project.languages.add(repo.language);
-        if (repo.topics) repo.topics.forEach((topic: string) => project.topics.add(topic));
+        if (repo.language && project.languages && project.languages.add) {
+          project.languages.add(repo.language);
+        }
+        if (repo.topics && project.topics && project.topics.add) {
+          repo.topics.forEach((topic: string) => project.topics.add(topic));
+        }
       }
     }
 
-    // 转换Set为Array
+    // 转换Set为Array，添加安全检查
     projects.forEach((project) => {
-      project.unique_contributors = project.unique_contributors.size;
-      project.languages = Array.from(project.languages);
-      project.topics = Array.from(project.topics);
+      project.unique_contributors = project.unique_contributors && project.unique_contributors.size 
+        ? project.unique_contributors.size 
+        : 0;
+      project.languages = project.languages && project.languages.size 
+        ? Array.from(project.languages) 
+        : [];
+      project.topics = project.topics && project.topics.size 
+        ? Array.from(project.topics) 
+        : [];
     });
   }
 
