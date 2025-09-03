@@ -55,8 +55,8 @@ export default function Home() {
     const matchesSearch = project.project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          project.project.description?.toLowerCase().includes(searchTerm.toLowerCase());
     
-    if (filter === 'high_value') return project.value_score >= 80 && matchesSearch;
-    if (filter === 'growing') return project.stars_growth_30d > 0 && matchesSearch;
+    if (filter === 'high_value') return project.value_score >= 65 && matchesSearch; // 降低到65分
+    if (filter === 'growing') return project.project.stargazers_count >= 50000 && matchesSearch; // 改为大型项目筛选
     if (filter === 'active') return project.commit_frequency > 10 && matchesSearch;
     
     return matchesSearch;

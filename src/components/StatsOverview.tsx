@@ -9,7 +9,7 @@ export function StatsOverview({ projects }: StatsOverviewProps) {
   const totalStars = projects.reduce((sum, p) => sum + p.project.stargazers_count, 0);
   const totalForks = projects.reduce((sum, p) => sum + p.project.forks_count, 0);
   const avgValueScore = projects.length > 0 ? projects.reduce((sum, p) => sum + p.value_score, 0) / projects.length : 0;
-  const highValueProjects = projects.filter(p => p.value_score >= 80).length;
+  const highValueProjects = projects.filter(p => p.value_score >= 65).length;
 
   const stats = [
     {

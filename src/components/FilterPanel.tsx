@@ -19,8 +19,8 @@ export function FilterPanel({
 }: FilterPanelProps) {
   const filterOptions = [
     { value: 'all', label: '所有项目' },
-    { value: 'high_value', label: '高价值 (≥80分)' },
-    { value: 'growing', label: '快速增长' },
+    { value: 'high_value', label: '高价值 (≥65分)' },
+    { value: 'growing', label: '大型项目 (≥5万Star)' },
     { value: 'active', label: '活跃项目' }
   ];
 
