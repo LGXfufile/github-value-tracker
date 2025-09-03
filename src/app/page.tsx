@@ -64,32 +64,30 @@ export default function Home() {
     }
   };
 
-  const filteredProjects = searchResults || data?.projects?.filter(project => {
-    if (!searchTerm) {
-      // 如果没有搜索词，按筛选器过滤
-      if (filter === 'high_value') return project.value_score >= 65;
-      if (filter === 'growing') return project.project.stargazers_count >= 50000;
-      if (filter === 'active') return project.commit_frequency > 10;
-      return true;
+  // 处理搜索
+  const handleSearch = async (searchQuery: string) => {
+    if (!searchQuery.trim()) {
+      setSearchResults(null);
+      return;
     }
 
-    // 更全面的搜索：项目名、描述、topics、所有者
-    const searchLower = searchTerm.toLowerCase();
-    const matchesSearch = 
-      project.project.name.toLowerCase().includes(searchLower) ||
-      project.project.description?.toLowerCase().includes(searchLower) ||
-      project.project.full_name.toLowerCase().includes(searchLower) ||
-      project.project.topics?.some(topic => topic.toLowerCase().includes(searchLower)) ||
-      // 搜索AI分析内容
-      (project.ai_analysis && (
-        project.ai_analysis.marketProblem?.en?.toLowerCase().includes(searchLower) ||
-        project.ai_analysis.marketProblem?.zh?.toLowerCase().includes(searchLower) ||
-        project.ai_analysis.userCatalyst?.en?.toLowerCase().includes(searchLower) ||
-        project.ai_analysis.userCatalyst?.zh?.toLowerCase().includes(searchLower)
-      ));
-    
-    if (!matchesSearch) return false;
+    try {
+      const response = await fetch(`/api/github?action=search&q=${encodeURIComponent(searchQuery)}&limit=50`);
+      const data = await response.json();
+      
+      if (response.ok) {
+        setSearchResults(data.projects || []);
+      } else {
+        console.error('Search failed:', data.error);
+        setSearchResults([]);
+      }
+    } catch (error) {
+      console.error('Search error:', error);
+      setSearchResults([]);
+    }
+  };
 
+  const filteredProjects = searchResults || data?.projects?.filter(project => {
     // 应用筛选器
     if (filter === 'high_value') return project.value_score >= 65;
     if (filter === 'growing') return project.project.stargazers_count >= 50000;
@@ -195,6 +193,7 @@ export default function Home() {
                 setSortBy={setSortBy}
                 searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}
+                onSearch={handleSearch}
               />
             )}
             

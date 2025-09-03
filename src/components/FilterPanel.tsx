@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { SearchIcon, FilterIcon } from 'lucide-react';
 import { useLanguage } from '@/lib/language';
 
@@ -8,6 +9,7 @@ interface FilterPanelProps {
   setSortBy: (sortBy: string) => void;
   searchTerm: string;
   setSearchTerm: (searchTerm: string) => void;
+  onSearch?: (term: string) => void;
 }
 
 export function FilterPanel({ 
@@ -16,9 +18,11 @@ export function FilterPanel({
   sortBy, 
   setSortBy, 
   searchTerm, 
-  setSearchTerm 
+  setSearchTerm,
+  onSearch
 }: FilterPanelProps) {
   const { t } = useLanguage();
+  const [searchLoading, setSearchLoading] = useState(false);
   
   const filterOptions = [
     { value: 'all', label: t('filter.category.all') },
@@ -33,6 +37,23 @@ export function FilterPanel({
     { value: 'growth', label: t('filter.sort.valueAsc') },
     { value: 'recent', label: t('filter.sort.recentUpdate') }
   ];
+
+  const handleSearch = async () => {
+    if (!onSearch || !searchTerm.trim()) return;
+    
+    setSearchLoading(true);
+    try {
+      await onSearch(searchTerm);
+    } finally {
+      setSearchLoading(false);
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && searchTerm.trim()) {
+      handleSearch();
+    }
+  };
 
   return (
     <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50">
@@ -50,8 +71,18 @@ export function FilterPanel({
             placeholder={t('filter.searchPlaceholder')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 bg-slate-700/50 border border-slate-600/50 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            onKeyPress={handleKeyPress}
+            className="w-full pl-10 pr-20 py-3 bg-slate-700/50 border border-slate-600/50 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
+          {searchTerm && (
+            <button
+              onClick={handleSearch}
+              disabled={searchLoading}
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 px-3 py-1 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-600 text-white text-sm rounded transition-colors"
+            >
+              {searchLoading ? '搜索中...' : '搜索'}
+            </button>
+          )}
         </div>
 
         {/* 筛选 */}
@@ -80,6 +111,12 @@ export function FilterPanel({
           ))}
         </select>
       </div>
+      
+      {onSearch && (
+        <p className="text-xs text-slate-400 mt-2">
+          按Enter或点击搜索按钮在GitHub海量项目中搜索
+        </p>
+      )}
     </div>
   );
 }
