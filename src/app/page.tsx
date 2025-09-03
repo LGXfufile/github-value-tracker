@@ -55,14 +55,37 @@ export default function Home() {
   };
 
   const filteredProjects = data?.projects?.filter(project => {
-    const matchesSearch = project.project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         project.project.description?.toLowerCase().includes(searchTerm.toLowerCase());
+    if (!searchTerm) {
+      // 如果没有搜索词，按筛选器过滤
+      if (filter === 'high_value') return project.value_score >= 65;
+      if (filter === 'growing') return project.project.stargazers_count >= 50000;
+      if (filter === 'active') return project.commit_frequency > 10;
+      return true;
+    }
+
+    // 更全面的搜索：项目名、描述、topics、所有者
+    const searchLower = searchTerm.toLowerCase();
+    const matchesSearch = 
+      project.project.name.toLowerCase().includes(searchLower) ||
+      project.project.description?.toLowerCase().includes(searchLower) ||
+      project.project.full_name.toLowerCase().includes(searchLower) ||
+      project.project.topics?.some(topic => topic.toLowerCase().includes(searchLower)) ||
+      // 搜索AI分析内容
+      (project.ai_analysis && (
+        project.ai_analysis.marketProblem?.en?.toLowerCase().includes(searchLower) ||
+        project.ai_analysis.marketProblem?.zh?.toLowerCase().includes(searchLower) ||
+        project.ai_analysis.userCatalyst?.en?.toLowerCase().includes(searchLower) ||
+        project.ai_analysis.userCatalyst?.zh?.toLowerCase().includes(searchLower)
+      ));
     
-    if (filter === 'high_value') return project.value_score >= 65 && matchesSearch; // 降低到65分
-    if (filter === 'growing') return project.project.stargazers_count >= 50000 && matchesSearch; // 改为大型项目筛选
-    if (filter === 'active') return project.commit_frequency > 10 && matchesSearch;
+    if (!matchesSearch) return false;
+
+    // 应用筛选器
+    if (filter === 'high_value') return project.value_score >= 65;
+    if (filter === 'growing') return project.project.stargazers_count >= 50000;
+    if (filter === 'active') return project.commit_frequency > 10;
     
-    return matchesSearch;
+    return true;
   }) || [];
 
   const sortedProjects = [...filteredProjects].sort((a, b) => {
