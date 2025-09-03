@@ -21,6 +21,24 @@ const translations = {
     'app.tagline': 'Discover unicorn projects before they go mainstream',
     'header.refresh': 'Refresh Data',
     'header.lastUpdate': 'Last Update: {time}',
+    'header.advancedSearch': 'Advanced Search',
+
+    // Advanced Search
+    'search.placeholder': 'Search projects by name, description, or topic...',
+    'search.searching': 'Searching...',
+    'search.search': 'Search',
+    'search.language': 'Programming Language',
+    'search.minStars': 'Minimum Stars',
+    'search.topics': 'Topics',
+    'search.sortBy': 'Sort By',
+    'search.sortByValue': 'Value Score',
+    'search.sortByStars': 'Stars',
+    'search.sortByGrowth': 'Growth',
+    'search.sortByRecent': 'Recently Updated',
+    'search.clear': 'Clear Filters',
+    'search.hint': 'Search across 100k+ repositories',
+    'search.results': 'Search Results ({count})',
+    'search.noResults': 'No projects found matching your criteria',
 
     // Stats Overview
     'stats.monitoredProjects': 'Monitored Projects',
@@ -90,6 +108,24 @@ const translations = {
     'app.tagline': '在独角兽项目成为主流之前发现它们',
     'header.refresh': '刷新数据',
     'header.lastUpdate': '更新于: {time}',
+    'header.advancedSearch': '高级搜索',
+
+    // Advanced Search
+    'search.placeholder': '搜索项目名称、描述或话题...',
+    'search.searching': '搜索中...',
+    'search.search': '搜索',
+    'search.language': '编程语言',
+    'search.minStars': '最少星标数',
+    'search.topics': '话题标签',
+    'search.sortBy': '排序方式',
+    'search.sortByValue': '价值评分',
+    'search.sortByStars': '星标数量',
+    'search.sortByGrowth': '增长速度',
+    'search.sortByRecent': '最近更新',
+    'search.clear': '清除筛选',
+    'search.hint': '搜索10万+开源项目',
+    'search.results': '搜索结果 ({count})',
+    'search.noResults': '未找到符合条件的项目',
 
     // Stats Overview
     'stats.monitoredProjects': '监控项目',

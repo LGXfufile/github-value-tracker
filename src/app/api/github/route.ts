@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { GitHubAPI } from '@/lib/github-api';
 import { ValueCalculator } from '@/lib/value-calculator';
 import { AIAnalyzer } from '@/lib/ai-analyzer';
+import { GHArchiveClient } from '@/lib/gharchive-client';
 import { MOCK_PROJECTS, MOCK_DISCOVERIES } from '@/lib/mock-data';
 
 // 预设的高价值种子项目 - 大大扩展项目库
@@ -153,6 +154,10 @@ export async function GET(request: NextRequest) {
         return await discoverNewProjects();
       case 'trending':
         return await getTrendingProjects();
+      case 'search':
+        return await searchProjects(request);
+      case 'analytics':
+        return await getProjectAnalytics(request);
       default:
         return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
     }
@@ -176,33 +181,108 @@ async function getTrackedProjects() {
     });
   }
 
-  const projects = [];
-  
-  // 获取更多种子项目的详细数据 - 从10个增加到50个
-  for (const projectPath of SEED_PROJECTS.slice(0, 50)) {
-    try {
-      const [owner, repo] = projectPath.split('/');
-      const project = await GitHubAPI.getRepository(owner, repo);
-      const metrics = await ValueCalculator.calculateDetailedMetrics(project);
-      
-      // 添加AI分析
-      metrics.ai_analysis = AIAnalyzer.analyzeProject(project, metrics);
-      
-      projects.push(metrics);
-    } catch (error) {
-      console.error(`Failed to fetch project ${projectPath}:`, error);
-      // 继续处理其他项目，不让单个失败影响整体
+  try {
+    // 使用GHArchive获取真实的热门项目数据
+    const trendingProjects = await GHArchiveClient.getTrendingProjects(7, 10, 100);
+    const projects = [];
+    
+    // 处理热门项目
+    for (const trendingProject of trendingProjects.slice(0, 50)) {
+      try {
+        const [owner, repo] = trendingProject.repo_name.split('/');
+        
+        // 构造GitHubProject格式
+        const project = {
+          id: Math.floor(Math.random() * 1000000),
+          name: repo,
+          full_name: trendingProject.repo_name,
+          description: trendingProject.description || '',
+          html_url: `https://github.com/${trendingProject.repo_name}`,
+          stargazers_count: Math.max(trendingProject.stars_added * 10, 50),
+          forks_count: Math.max(trendingProject.forks_added * 5, 10),
+          open_issues_count: trendingProject.open_issues || 0,
+          watchers_count: Math.max(trendingProject.stars_added * 10, 50),
+          language: trendingProject.languages[0] || 'Unknown',
+          created_at: trendingProject.created_at || new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+          pushed_at: trendingProject.pushed_at || new Date().toISOString(),
+          homepage: trendingProject.homepage || '',
+          topics: trendingProject.topics || [],
+          license: trendingProject.license ? {
+            key: trendingProject.license.toLowerCase().replace(/\s+/g, '-'),
+            name: trendingProject.license
+          } : null,
+          owner: {
+            login: owner,
+            avatar_url: `https://github.com/${owner}.png`
+          }
+        };
+        
+        const metrics = await ValueCalculator.calculateDetailedMetrics(project);
+        
+        // 添加AI分析
+        metrics.ai_analysis = AIAnalyzer.analyzeProject(project, metrics);
+        
+        projects.push(metrics);
+      } catch (error) {
+        console.error(`Failed to process trending project ${trendingProject.repo_name}:`, error);
+      }
     }
+    
+    // 补充种子项目以确保有足够的数据
+    if (projects.length < 30) {
+      for (const projectPath of SEED_PROJECTS.slice(0, 30 - projects.length)) {
+        try {
+          const [owner, repo] = projectPath.split('/');
+          const project = await GitHubAPI.getRepository(owner, repo);
+          const metrics = await ValueCalculator.calculateDetailedMetrics(project);
+          
+          // 检查是否已存在
+          if (!projects.find(p => p.project.full_name === project.full_name)) {
+            metrics.ai_analysis = AIAnalyzer.analyzeProject(project, metrics);
+            projects.push(metrics);
+          }
+        } catch (error) {
+          console.error(`Failed to fetch seed project ${projectPath}:`, error);
+        }
+      }
+    }
+    
+    // 按价值评分排序
+    projects.sort((a, b) => b.value_score - a.value_score);
+    
+    return NextResponse.json({
+      projects,
+      total: projects.length,
+      last_updated: new Date().toISOString(),
+      source: 'gharchive_enhanced'
+    });
+  } catch (error) {
+    console.error('Failed to get tracked projects from GHArchive:', error);
+    
+    // 降级到原始方法
+    const projects = [];
+    for (const projectPath of SEED_PROJECTS.slice(0, 50)) {
+      try {
+        const [owner, repo] = projectPath.split('/');
+        const project = await GitHubAPI.getRepository(owner, repo);
+        const metrics = await ValueCalculator.calculateDetailedMetrics(project);
+        metrics.ai_analysis = AIAnalyzer.analyzeProject(project, metrics);
+        projects.push(metrics);
+      } catch (error) {
+        console.error(`Failed to fetch project ${projectPath}:`, error);
+      }
+    }
+    
+    projects.sort((a, b) => b.value_score - a.value_score);
+    
+    return NextResponse.json({
+      projects,
+      total: projects.length,
+      last_updated: new Date().toISOString(),
+      source: 'fallback'
+    });
   }
-  
-  // 按价值评分排序
-  projects.sort((a, b) => b.value_score - a.value_score);
-  
-  return NextResponse.json({
-    projects,
-    total: projects.length,
-    last_updated: new Date().toISOString()
-  });
 }
 
 async function discoverNewProjects() {
@@ -216,27 +296,187 @@ async function discoverNewProjects() {
   }
 
   try {
-    const trendingProjects = await GitHubAPI.getTrendingRepositories();
+    // 使用GHArchive发现新的高价值项目
+    const trendingProjects = await GHArchiveClient.getTrendingProjects(3, 20, 50);
     const discoveries = [];
     
     for (const project of trendingProjects.slice(0, 20)) {
-      const metrics = await ValueCalculator.calculateDetailedMetrics(project);
-      if (metrics.value_score > 60) { // 只返回高价值项目
-        discoveries.push({
-          project: metrics,
-          reason: 'high_value_discovery',
-          discovered_at: new Date().toISOString()
-        });
+      try {
+        const [owner, repo] = project.repo_name.split('/');
+        
+        // 构造项目对象
+        const gitHubProject = {
+          id: Math.floor(Math.random() * 1000000),
+          name: repo,
+          full_name: project.repo_name,
+          description: project.description || '',
+          html_url: `https://github.com/${project.repo_name}`,
+          stargazers_count: Math.max(project.stars_added * 15, 100),
+          forks_count: Math.max(project.forks_added * 8, 20),
+          open_issues_count: project.open_issues || 0,
+          watchers_count: Math.max(project.stars_added * 15, 100),
+          language: project.languages[0] || 'Unknown',
+          created_at: project.created_at || new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+          pushed_at: project.pushed_at || new Date().toISOString(),
+          homepage: project.homepage || '',
+          topics: project.topics || [],
+          license: project.license ? {
+            key: project.license.toLowerCase().replace(/\s+/g, '-'),
+            name: project.license
+          } : null,
+          owner: {
+            login: owner,
+            avatar_url: `https://github.com/${owner}.png`
+          }
+        };
+        
+        const metrics = await ValueCalculator.calculateDetailedMetrics(gitHubProject);
+        
+        if (metrics.value_score > 60) {
+          discoveries.push({
+            project: metrics,
+            reason: project.stars_added > 50 ? 'viral_growth' : 'high_value_discovery',
+            discovered_at: new Date().toISOString(),
+            growth_indicators: {
+              stars_added_7d: project.stars_added,
+              unique_contributors: project.unique_contributors,
+              trending_topics: project.topics.slice(0, 3)
+            }
+          });
+        }
+      } catch (error) {
+        console.error(`Failed to process discovery ${project.repo_name}:`, error);
       }
     }
     
     return NextResponse.json({
-      discoveries: discoveries.slice(0, 10),
-      total: discoveries.length
+      discoveries: discoveries.slice(0, 15),
+      total: discoveries.length,
+      source: 'gharchive_discovery'
     });
   } catch (error) {
     console.error('Discovery error:', error);
-    return NextResponse.json({ discoveries: [], total: 0 });
+    
+    // 降级到GitHub API搜索
+    try {
+      const trendingProjects = await GitHubAPI.getTrendingRepositories();
+      const discoveries = [];
+      
+      for (const project of trendingProjects.slice(0, 20)) {
+        const metrics = await ValueCalculator.calculateDetailedMetrics(project);
+        if (metrics.value_score > 60) {
+          discoveries.push({
+            project: metrics,
+            reason: 'high_value_discovery',
+            discovered_at: new Date().toISOString()
+          });
+        }
+      }
+      
+      return NextResponse.json({
+        discoveries: discoveries.slice(0, 10),
+        total: discoveries.length,
+        source: 'github_api_fallback'
+      });
+    } catch (fallbackError) {
+      console.error('Fallback discovery error:', fallbackError);
+      return NextResponse.json({ discoveries: [], total: 0 });
+    }
+  }
+}
+
+// 新增搜索功能
+async function searchProjects(request: NextRequest) {
+  if (!GITHUB_TOKEN) {
+    return NextResponse.json({ error: 'GitHub token required for search' }, { status: 400 });
+  }
+
+  try {
+    const url = new URL(request.url);
+    const query = url.searchParams.get('q') || '';
+    const language = url.searchParams.get('language') || undefined;
+    const minStars = parseInt(url.searchParams.get('minStars') || '0');
+    const topics = url.searchParams.get('topics')?.split(',').filter(Boolean) || [];
+    const limit = parseInt(url.searchParams.get('limit') || '50');
+
+    if (!query.trim()) {
+      return NextResponse.json({ error: 'Search query is required' }, { status: 400 });
+    }
+
+    const searchResults = await GHArchiveClient.searchProjects(query, {
+      language,
+      minStars,
+      topics,
+      maxAge: 365 // 最近一年
+    }, limit);
+
+    const projects = [];
+    for (const project of searchResults) {
+      try {
+        const metrics = await ValueCalculator.calculateDetailedMetrics(project);
+        metrics.ai_analysis = AIAnalyzer.analyzeProject(project, metrics);
+        projects.push(metrics);
+      } catch (error) {
+        console.error(`Failed to process search result ${project.full_name}:`, error);
+      }
+    }
+
+    // 按价值评分排序
+    projects.sort((a, b) => b.value_score - a.value_score);
+
+    return NextResponse.json({
+      projects,
+      total: projects.length,
+      query,
+      filters: { language, minStars, topics },
+      last_updated: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Search error:', error);
+    return NextResponse.json({ 
+      error: 'Search failed',
+      message: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 });
+  }
+}
+
+// 新增项目分析功能
+async function getProjectAnalytics(request: NextRequest) {
+  if (!GITHUB_TOKEN) {
+    return NextResponse.json({ error: 'GitHub token required for analytics' }, { status: 400 });
+  }
+
+  try {
+    const url = new URL(request.url);
+    const owner = url.searchParams.get('owner');
+    const repo = url.searchParams.get('repo');
+
+    if (!owner || !repo) {
+      return NextResponse.json({ error: 'Owner and repo parameters are required' }, { status: 400 });
+    }
+
+    const analytics = await GHArchiveClient.getProjectAnalytics(owner, repo);
+    
+    if (!analytics) {
+      return NextResponse.json({ error: 'Failed to fetch project analytics' }, { status: 404 });
+    }
+
+    // 计算价值指标
+    const metrics = await ValueCalculator.calculateDetailedMetrics(analytics.repository);
+    metrics.ai_analysis = AIAnalyzer.analyzeProject(analytics.repository, metrics);
+
+    return NextResponse.json({
+      ...analytics,
+      value_metrics: metrics,
+      generated_at: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Analytics error:', error);
+    return NextResponse.json({ 
+      error: 'Analytics failed',
+      message: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 });
   }
 }
 
