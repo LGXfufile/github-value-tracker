@@ -1,5 +1,4 @@
 import { ProjectMetrics, Discovery } from '@/types/github';
-import { AIAnalyzer } from './ai-analyzer';
 
 export const MOCK_PROJECTS: ProjectMetrics[] = [
   {
@@ -38,7 +37,7 @@ export const MOCK_PROJECTS: ProjectMetrics[] = [
       userAppeal: "开发体验极佳，性能优秀，生态丰富，企业级特性完善",
       maintainerMotivation: "前端框架是基础设施，巨大的开发者生态带来商业价值和技术影响力",
       monetizationDifficulty: {
-        level: 'high',
+        level: 'high' as const,
         challenges: "框架本身难以直接盈利，主要通过周边服务（Vercel部署、培训、咨询）以及企业影响力获得收益"
       }
     }
@@ -79,18 +78,12 @@ export const MOCK_PROJECTS: ProjectMetrics[] = [
       userAppeal: "极大降低全栈开发门槛，快速构建MVP，专注前端和业务逻辑",
       maintainerMotivation: "云服务市场高速增长，开源+商业云服务模式被验证成功（如Firebase）",
       monetizationDifficulty: {
-        level: 'high',
+        level: 'high' as const,
         challenges: "需要强大的云基础设施投入，与AWS/Google竞争，但可通过托管服务、企业私有化部署、技术咨询获得收入"
       }
     }
   }
-].map(project => {
-  // 为没有AI分析的项目自动生成
-  if (!project.ai_analysis) {
-    project.ai_analysis = AIAnalyzer.analyzeProject(project.project, project);
-  }
-  return project;
-});
+];
 
 export const MOCK_DISCOVERIES: Discovery[] = [
   {

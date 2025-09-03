@@ -30,7 +30,13 @@ export class AIAnalyzer {
     name: string, 
     description: string | null, 
     topics: string[], 
-    stats: any
+    stats: {
+      stars: number;
+      language: string | null;
+      valueScore: number;
+      commitFreq: number;
+      contributors: number;
+    }
   ): ProjectAnalysis {
     
     const projectKey = name.toLowerCase();
@@ -155,7 +161,17 @@ export class AIAnalyzer {
     };
   }
   
-  private static generateGenericAnalysis(desc: string, topics: string, stats: any): ProjectAnalysis {
+  private static generateGenericAnalysis(
+    desc: string, 
+    topics: string, 
+    stats: {
+      stars: number;
+      language: string | null;
+      valueScore: number;
+      commitFreq: number;
+      contributors: number;
+    }
+  ): ProjectAnalysis {
     // 通用分析逻辑
     let problemSolved = "解决开发过程中的特定技术问题";
     let userAppeal = "提供开源、免费的解决方案";
