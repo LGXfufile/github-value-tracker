@@ -55,8 +55,24 @@ export function ProjectCard({ metrics }: ProjectCardProps) {
         </div>
         
         {/* Value Score */}
-        <div className={`px-3 py-1 rounded-full text-sm font-medium border ${getValueScoreColor(metrics.value_score)}`}>
-          {metrics.value_score}分
+        <div className="flex items-center space-x-2">
+          <div className={`px-3 py-1 rounded-full text-sm font-medium border ${getValueScoreColor(metrics.value_score)}`}>
+            {metrics.value_score}分
+          </div>
+          <div className="relative group">
+            <div className="w-4 h-4 rounded-full bg-slate-600 flex items-center justify-center cursor-help">
+              <span className="text-xs text-slate-300">?</span>
+            </div>
+            <div className="absolute right-0 top-6 w-64 p-3 bg-slate-700 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 text-xs text-slate-200">
+              <div className="font-medium mb-2">价值评分算法:</div>
+              <div className="space-y-1">
+                <div>• 增长潜力 (30%): Star增长率、Fork比例</div>
+                <div>• 技术成熟度 (25%): 文档完整性、更新频率</div>
+                <div>• 商业化可能 (25%): 商业关键词匹配</div>
+                <div>• 社区活跃度 (20%): 贡献者、Issue处理</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

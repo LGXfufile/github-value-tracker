@@ -59,7 +59,23 @@ export function StatsOverview({ projects }: StatsOverviewProps) {
             <div className="mt-3">
               <div className="flex items-center justify-between text-sm">
                 <span className="text-slate-500">平均评分</span>
-                <span className="text-slate-300 font-medium">{avgValueScore.toFixed(0)}分</span>
+                <div className="flex items-center space-x-1">
+                  <span className="text-slate-300 font-medium">{avgValueScore.toFixed(0)}分</span>
+                  <div className="relative group">
+                    <div className="w-3 h-3 rounded-full bg-slate-600 flex items-center justify-center cursor-help">
+                      <span className="text-xs text-slate-400">?</span>
+                    </div>
+                    <div className="absolute right-0 top-4 w-56 p-3 bg-slate-700 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 text-xs text-slate-200">
+                      <div className="font-medium mb-2">评分维度:</div>
+                      <div className="space-y-1">
+                        <div>增长潜力 30%</div>
+                        <div>技术成熟度 25%</div>
+                        <div>商业化可能 25%</div>
+                        <div>社区活跃度 20%</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
               <div className="w-full bg-slate-700 rounded-full h-2 mt-2">
                 <div 
