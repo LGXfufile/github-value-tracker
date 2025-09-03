@@ -33,12 +33,28 @@ export const MOCK_PROJECTS: ProjectMetrics[] = [
     value_score: 92,
     last_updated: '2025-09-03T10:00:00Z',
     ai_analysis: {
-      problemSolved: "简化React应用开发，提供生产就绪的全栈解决方案",
-      userAppeal: "开发体验极佳，性能优秀，生态丰富，企业级特性完善",
-      maintainerMotivation: "前端框架是基础设施，巨大的开发者生态带来商业价值和技术影响力",
-      monetizationDifficulty: {
+      marketProblem: {
+        en: "Simplifies React application development, provides production-ready full-stack solutions with optimal performance",
+        zh: "简化React应用开发，提供生产就绪的全栈解决方案"
+      },
+      userCatalyst: {
+        en: "Exceptional developer experience, superior performance, rich ecosystem, enterprise-grade features",
+        zh: "开发体验极佳，性能优秀，生态丰富，企业级特性完善"
+      },
+      developerRetention: {
+        en: "Frontend frameworks are critical infrastructure, massive developer ecosystem creates significant business value and technical influence",
+        zh: "前端框架是基础设施，巨大的开发者生态带来商业价值和技术影响力"
+      },
+      revenueGeneration: {
         level: 'high' as const,
-        challenges: "框架本身难以直接盈利，主要通过周边服务（Vercel部署、培训、咨询）以及企业影响力获得收益"
+        pathways: {
+          en: ["Cloud deployment platform", "Enterprise support & consulting", "Training & certification", "Developer tools & services"],
+          zh: ["云部署平台", "企业支持咨询", "培训认证", "开发工具服务"]
+        },
+        challenges: {
+          en: "Framework itself hard to monetize directly, revenue comes through ecosystem services (Vercel hosting, training, consulting)",
+          zh: "框架本身难以直接盈利，主要通过周边服务（Vercel部署、培训、咨询）以及企业影响力获得收益"
+        }
       }
     }
   },
@@ -74,12 +90,28 @@ export const MOCK_PROJECTS: ProjectMetrics[] = [
     value_score: 89,
     last_updated: '2025-09-03T09:45:00Z',
     ai_analysis: {
-      problemSolved: "简化后端开发复杂度，提供即开即用的后端服务（数据库、认证、API等）",
-      userAppeal: "极大降低全栈开发门槛，快速构建MVP，专注前端和业务逻辑",
-      maintainerMotivation: "云服务市场高速增长，开源+商业云服务模式被验证成功（如Firebase）",
-      monetizationDifficulty: {
+      marketProblem: {
+        en: "Reduces backend development complexity, provides ready-to-use backend services (database, auth, APIs)",
+        zh: "简化后端开发复杂度，提供即开即用的后端服务（数据库、认证、API等）"
+      },
+      userCatalyst: {
+        en: "Dramatically lowers full-stack development barrier, enables rapid MVP development, focus on frontend/business logic",
+        zh: "极大降低全栈开发门槛，快速构建MVP，专注前端和业务逻辑"
+      },
+      developerRetention: {
+        en: "Cloud services market experiencing rapid growth, open source + commercial cloud model proven successful (Firebase model)",
+        zh: "云服务市场高速增长，开源+商业云服务模式被验证成功（如Firebase）"
+      },
+      revenueGeneration: {
         level: 'high' as const,
-        challenges: "需要强大的云基础设施投入，与AWS/Google竞争，但可通过托管服务、企业私有化部署、技术咨询获得收入"
+        pathways: {
+          en: ["Managed cloud hosting ($10-1000+/month)", "Enterprise on-premise licenses", "Professional support & consulting", "Custom feature development"],
+          zh: ["托管云服务", "企业私有化部署", "专业支持和咨询", "定制功能开发"]
+        },
+        challenges: {
+          en: "Requires significant cloud infrastructure investment, competing with AWS/Google/Microsoft giants",
+          zh: "需要强大的云基础设施投入，与AWS/Google竞争，但可通过托管服务、企业私有化部署、技术咨询获得收入"
+        }
       }
     }
   }

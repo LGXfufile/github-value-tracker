@@ -21,12 +21,44 @@ export interface GitHubProject {
 }
 
 export interface ProjectAnalysis {
-  problemSolved: string;
-  userAppeal: string;
-  maintainerMotivation: string;
-  monetizationDifficulty: {
+  marketProblem: {
+    en: string;
+    zh: string;
+  };
+  userCatalyst: {
+    en: string; 
+    zh: string;
+  };
+  developerRetention: {
+    en: string;
+    zh: string;
+  };
+  revenueGeneration: {
     level: 'low' | 'medium' | 'high';
-    challenges: string;
+    pathways: {
+      en: string[];
+      zh: string[];
+    };
+    challenges: {
+      en: string;
+      zh: string;
+    };
+  };
+  competitiveMoat?: {
+    en: string;
+    zh: string;
+  };
+  globalReadiness?: {
+    en: string;
+    zh: string;
+  };
+  enterpriseScore?: {
+    en: string;
+    zh: string;
+  };
+  riskAssessment?: {
+    en: string;
+    zh: string;
   };
 }
 

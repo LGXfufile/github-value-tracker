@@ -1,4 +1,5 @@
 import { SearchIcon, FilterIcon } from 'lucide-react';
+import { useLanguage } from '@/lib/language';
 
 interface FilterPanelProps {
   filter: string;
@@ -17,25 +18,27 @@ export function FilterPanel({
   searchTerm, 
   setSearchTerm 
 }: FilterPanelProps) {
+  const { t } = useLanguage();
+  
   const filterOptions = [
-    { value: 'all', label: '所有项目' },
-    { value: 'high_value', label: '高价值 (≥65分)' },
-    { value: 'growing', label: '大型项目 (≥5万Star)' },
-    { value: 'active', label: '活跃项目' }
+    { value: 'all', label: t('filter.category.all') },
+    { value: 'high_value', label: t('filter.category.highValue') },
+    { value: 'growing', label: t('filter.category.growing') },
+    { value: 'active', label: t('filter.category.new') }
   ];
 
   const sortOptions = [
-    { value: 'value_score', label: '价值评分' },
-    { value: 'stars', label: 'Star数量' },
-    { value: 'growth', label: '增长速度' },
-    { value: 'recent', label: '最近更新' }
+    { value: 'value_score', label: t('filter.sort.valueDesc') },
+    { value: 'stars', label: t('filter.sort.starsDesc') },
+    { value: 'growth', label: t('filter.sort.valueAsc') },
+    { value: 'recent', label: t('filter.sort.recentUpdate') }
   ];
 
   return (
     <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50">
       <div className="flex items-center space-x-2 mb-4">
         <FilterIcon className="w-5 h-5 text-slate-400" />
-        <h3 className="text-lg font-semibold text-white">筛选和排序</h3>
+        <h3 className="text-lg font-semibold text-white">{t('filter.title')}</h3>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -44,7 +47,7 @@ export function FilterPanel({
           <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
           <input
             type="text"
-            placeholder="搜索项目..."
+            placeholder={t('filter.searchPlaceholder')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-3 bg-slate-700/50 border border-slate-600/50 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
