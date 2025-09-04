@@ -7,8 +7,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run dev` - Start development server with Turbopack (runs on http://localhost:3000)
 - `npm run build` - Build for production with Turbopack 
 - `npm start` - Start production server
-- `npm run lint` - Run ESLint
+- `npm run lint` - Run ESLint with TypeScript support (configured to warn on `any` types)
 - `npm run build:turbo` - Alternative build with Turbopack
+
+**Note**: No test framework configured - project uses production deployment testing
 
 ## Project Overview
 
@@ -109,3 +111,9 @@ GITHUB_TOKEN=your_github_personal_access_token
 - Clear separation between data fetching, processing, and presentation
 - Modular architecture with single-responsibility classes
 - TypeScript interfaces for all data structures
+
+## Path Aliases & Configuration
+
+- Uses `@/*` path aliases configured in `tsconfig.json` pointing to `./src/*`
+- ESLint config in `eslint.config.mjs` extends Next.js rules with `@typescript-eslint/no-explicit-any` set to warning
+- Next.js 15 with App Router, Turbopack support, and strict TypeScript configuration

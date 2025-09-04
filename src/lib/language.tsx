@@ -52,6 +52,7 @@ const translations = {
     // Filter Panel
     'filter.title': 'Filter & Sort',
     'filter.searchPlaceholder': 'Search projects...',
+    'filter.search': 'Search',
     'filter.category.all': 'All Projects',
     'filter.category.highValue': 'High Value (≥65 pts)',
     'filter.category.growing': 'Growing (≥50k stars)',
@@ -139,6 +140,7 @@ const translations = {
     // Filter Panel
     'filter.title': '筛选和排序',
     'filter.searchPlaceholder': '搜索项目...',
+    'filter.search': '搜索',
     'filter.category.all': '所有项目',
     'filter.category.highValue': '高价值 (≥65分)',
     'filter.category.growing': '增长中 (≥5万星)',
