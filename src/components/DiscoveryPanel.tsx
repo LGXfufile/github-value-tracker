@@ -7,7 +7,7 @@ import { useState } from 'react';
 interface DiscoveryPanelProps {
   discoveries: Discovery[];
   loading?: boolean;
-  error?: string;
+  error?: string | null;
   onRefresh?: () => void;
 }
 
