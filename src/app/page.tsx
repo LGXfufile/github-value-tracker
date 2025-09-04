@@ -221,38 +221,67 @@ export default function Home() {
               />
             )}
             
-            {/* 筛选面板 - 搜索状态时只显示搜索框 */}
+            {/* 筛选面板 - 搜索状态时显示搜索框和筛选排序 */}
             {searchResults ? (
               <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50">
                 <div className="flex items-center space-x-2 mb-4">
                   <SearchIcon className="w-5 h-5 text-slate-400" />
                   <h3 className="text-lg font-semibold text-white">{t('filter.title')}</h3>
                 </div>
-                <div className="relative">
-                  <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
-                  <input
-                    type="text"
-                    placeholder={t('filter.searchPlaceholder')}
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    onKeyPress={(e) => {
-                      if (e.key === 'Enter' && searchTerm.trim()) {
-                        handleSearch(searchTerm);
-                      }
-                    }}
-                    className="w-full pl-10 pr-20 py-3 bg-slate-700/50 border border-slate-600/50 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                  {searchTerm && (
-                    <button
-                      onClick={() => handleSearch(searchTerm)}
-                      className="absolute right-2 top-1/2 transform -translate-y-1/2 px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded transition-colors"
-                    >
-                      {t('filter.search')}
-                    </button>
-                  )}
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {/* 搜索框 */}
+                  <div className="relative">
+                    <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    <input
+                      type="text"
+                      placeholder={t('filter.searchPlaceholder')}
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      onKeyPress={(e) => {
+                        if (e.key === 'Enter' && searchTerm.trim()) {
+                          handleSearch(searchTerm);
+                        }
+                      }}
+                      className="w-full pl-10 pr-20 py-3 bg-slate-700/50 border border-slate-600/50 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                    {searchTerm && (
+                      <button
+                        onClick={() => handleSearch(searchTerm)}
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded transition-colors"
+                      >
+                        {t('filter.search')}
+                      </button>
+                    )}
+                  </div>
+
+                  {/* 筛选 - 保持功能但标签适配搜索状态 */}
+                  <select
+                    value={filter}
+                    onChange={(e) => setFilter(e.target.value)}
+                    className="px-4 py-3 bg-slate-700/50 border border-slate-600/50 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none cursor-pointer"
+                  >
+                    <option value="all" className="bg-slate-700">{t('filter.category.all')}</option>
+                    <option value="high_value" className="bg-slate-700">{t('filter.category.highValue')}</option>
+                    <option value="growing" className="bg-slate-700">{t('filter.category.growing')}</option>
+                    <option value="active" className="bg-slate-700">{t('filter.category.new')}</option>
+                  </select>
+
+                  {/* 排序 */}
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="px-4 py-3 bg-slate-700/50 border border-slate-600/50 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none cursor-pointer"
+                  >
+                    <option value="value_score" className="bg-slate-700">按{t('filter.sort.valueDesc')}排序</option>
+                    <option value="stars" className="bg-slate-700">按{t('filter.sort.starsDesc')}排序</option>
+                    <option value="growth" className="bg-slate-700">按{t('filter.sort.valueAsc')}排序</option>
+                    <option value="recent" className="bg-slate-700">按{t('filter.sort.recentUpdate')}排序</option>
+                  </select>
                 </div>
+                
                 <p className="text-xs text-slate-400 mt-2">
-                  按Enter或点击搜索按钮在GitHub海量项目中搜索
+                  按Enter或点击搜索按钮在GitHub海量项目中搜索 • 可使用筛选和排序功能优化结果
                 </p>
               </div>
             ) : (
