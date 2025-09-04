@@ -143,10 +143,7 @@ export function DiscoveryPanel({ discoveries, loading, error, onRefresh }: Disco
           </p>
           {onRefresh && (
             <button
-              onClick={() => {
-                console.log('刷新按钮被点击');
-                onRefresh();
-              }}
+              onClick={onRefresh}
               className="text-xs text-blue-400 hover:text-blue-300 transition-colors"
             >
               点击刷新重新扫描
