@@ -23,6 +23,8 @@ export default function Home() {
   const { t } = useLanguage();
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [discoveryLoading, setDiscoveryLoading] = useState(false);
+  const [discoveryError, setDiscoveryError] = useState<string | null>(null);
   const [filter, setFilter] = useState('all');
   const [sortBy, setSortBy] = useState('value_score');
   const [searchTerm, setSearchTerm] = useState('');
@@ -35,6 +37,8 @@ export default function Home() {
 
   const fetchData = async () => {
     setLoading(true);
+    setDiscoveryError(null);
+    
     try {
       const [projectsRes, discoveriesRes] = await Promise.all([
         fetch('/api/github?action=projects'),
@@ -44,6 +48,11 @@ export default function Home() {
       const projectsData = await projectsRes.json();
       const discoveriesData = await discoveriesRes.json();
       
+      // 检查发现数据是否有错误
+      if (!discoveriesRes.ok) {
+        setDiscoveryError(discoveriesData.error || '获取发现数据失败');
+      }
+      
       setData({
         projects: projectsData.projects || [],
         discoveries: discoveriesData.discoveries || [],
@@ -52,6 +61,7 @@ export default function Home() {
       });
     } catch (error) {
       console.error('Failed to fetch data:', error);
+      setDiscoveryError('网络连接失败');
       // 在错误情况下显示模拟数据
       setData({
         projects: [],
@@ -61,6 +71,33 @@ export default function Home() {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  // 独立刷新发现数据
+  const refreshDiscoveries = async () => {
+    setDiscoveryLoading(true);
+    setDiscoveryError(null);
+    
+    try {
+      const response = await fetch('/api/github?action=discover');
+      const discoveriesData = await response.json();
+      
+      if (!response.ok) {
+        setDiscoveryError(discoveriesData.error || '获取发现数据失败');
+        return;
+      }
+      
+      // 更新发现数据
+      setData(prev => prev ? {
+        ...prev,
+        discoveries: discoveriesData.discoveries || []
+      } : null);
+    } catch (error) {
+      console.error('Failed to refresh discoveries:', error);
+      setDiscoveryError('网络连接失败');
+    } finally {
+      setDiscoveryLoading(false);
     }
   };
 
@@ -268,7 +305,12 @@ export default function Home() {
           
           {/* 侧边栏 */}
           <div className="xl:col-span-1">
-            <DiscoveryPanel discoveries={data?.discoveries || []} />
+            <DiscoveryPanel 
+              discoveries={data?.discoveries || []}
+              loading={discoveryLoading}
+              error={discoveryError}
+              onRefresh={refreshDiscoveries}
+            />
           </div>
         </div>
       </div>

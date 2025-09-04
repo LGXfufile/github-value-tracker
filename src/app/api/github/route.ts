@@ -230,7 +230,8 @@ async function discoverNewProjects() {
     return NextResponse.json({
       discoveries: MOCK_DISCOVERIES,
       total: MOCK_DISCOVERIES.length,
-      demo_mode: true
+      demo_mode: true,
+      message: '使用模拟数据 - 需要GitHub Token启用实时发现功能'
     });
   }
 
@@ -257,7 +258,10 @@ async function discoverNewProjects() {
     return NextResponse.json({
       discoveries: discoveries.slice(0, 5),
       total: discoveries.length,
-      source: 'github_api_simple'
+      source: 'github_api_trending',
+      message: discoveries.length > 0 
+        ? `发现 ${discoveries.length} 个高价值项目 (评分 > 60)` 
+        : '暂未发现符合条件的高价值项目，请稍后重试'
     });
   } catch (error) {
     console.error('Discovery error:', error);
@@ -265,7 +269,8 @@ async function discoverNewProjects() {
       discoveries: MOCK_DISCOVERIES.slice(0, 2), 
       total: 2,
       demo_mode: true,
-      error: 'Fallback to mock data'
+      error: 'GitHub API 暂时不可用，使用模拟数据',
+      message: '请检查网络连接或稍后重试'
     });
   }
 }
