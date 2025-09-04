@@ -3,12 +3,14 @@ import { StarIcon, GitForkIcon, EyeIcon, GitCommitIcon, ExternalLinkIcon } from 
 import { formatDistanceToNow } from 'date-fns';
 import { zhCN } from 'date-fns/locale';
 import { useLanguage } from '@/lib/language';
+import { HighlightText } from './HighlightText';
 
 interface ProjectCardProps {
   metrics: ProjectMetrics;
+  searchTerm?: string;
 }
 
-export function ProjectCard({ metrics }: ProjectCardProps) {
+export function ProjectCard({ metrics, searchTerm = '' }: ProjectCardProps) {
   const { language, t } = useLanguage();
   const { project } = metrics;
   
@@ -39,7 +41,10 @@ export function ProjectCard({ metrics }: ProjectCardProps) {
         <div className="flex-1 min-w-0">
           <div className="flex items-center space-x-3 mb-2">
             <h3 className="text-xl font-bold text-white truncate">
-              {project.name}
+              <HighlightText 
+                text={project.name} 
+                searchTerm={searchTerm}
+              />
             </h3>
             <a 
               href={project.html_url}
@@ -50,9 +55,19 @@ export function ProjectCard({ metrics }: ProjectCardProps) {
               <ExternalLinkIcon className="w-4 h-4" />
             </a>
           </div>
-          <p className="text-sm text-slate-400 mb-1">{project.full_name}</p>
+          <p className="text-sm text-slate-400 mb-1">
+            <HighlightText 
+              text={project.full_name} 
+              searchTerm={searchTerm}
+            />
+          </p>
           {project.description && (
-            <p className="text-slate-300 text-sm line-clamp-2">{project.description}</p>
+            <p className="text-slate-300 text-sm line-clamp-2">
+              <HighlightText 
+                text={project.description} 
+                searchTerm={searchTerm}
+              />
+            </p>
           )}
         </div>
         
@@ -156,7 +171,10 @@ export function ProjectCard({ metrics }: ProjectCardProps) {
               key={topic}
               className="px-2 py-1 text-xs bg-blue-500/10 text-blue-400 rounded-md border border-blue-500/20"
             >
-              {topic}
+              <HighlightText 
+                text={topic} 
+                searchTerm={searchTerm}
+              />
             </span>
           ))}
           {project.topics.length > 5 && (

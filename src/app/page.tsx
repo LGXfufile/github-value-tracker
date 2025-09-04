@@ -289,7 +289,11 @@ export default function Home() {
               {sortedProjects.length > 0 ? (
                 <div className="grid gap-6">
                   {sortedProjects.map((metrics) => (
-                    <ProjectCard key={metrics.project.id} metrics={metrics} />
+                    <ProjectCard 
+                      key={metrics.project.id} 
+                      metrics={metrics} 
+                      searchTerm={searchResults ? searchTerm : ''}
+                    />
                   ))}
                 </div>
               ) : (
